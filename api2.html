@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #container{
+            display: grid;
+            grid-template-columns: repeat(4 , 1fr);
+            gap: 20px;
+        }
+        #container > div{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border: 1px solid lightgray;
+        }
+        img{
+            width: 100px;
+        }
+    </style>
+    <title>Document</title>
+   
+</head>
+<body>
+    <div id="container"></div>
+    <script>
+         let cart=localStorage.getItem("cart");
+         if(cart===null){
+         localStorage.setItem("cart",JSON.stringify([]))
+        }
+        
+        var container = document.getElementById("container")
+        var url = 'https://fakestoreapi.com/products';
+        async function getData(){
+           try{
+               var res = await fetch(url)
+               var data = await res.json();
+               
+               displayData(data);
+
+           }
+           catch(err){
+               console.log(err);
+
+           }
+        }
+        getData();
+        function displayData(data){
+             data.forEach(function(product){
+                var productCard = document.createElement('div');
+                var img = document.createElement('img');
+                img.src = product.image;
+                var title = document.createElement('p');
+                title.textContent = product.title;
+                var price = document.createElement('p');
+                price.textContent = product.price;
+                var addToCartButton = document.createElement('button')
+                addToCartButton.textContent = 'Add To Cart'
+        
+                addToCartButton.onclick = function(){
+                    addToCart(product)
+
+                };
+
+                productCard.append(img,title,price,addToCartButton)
+                container.append(productCard)
+            });
+            function addToCart(productData){
+               let cart = JSON.parse(localStorage.getItem("cart"));
+               cart.push(productData)
+               localStorage.setItem("cart", JSON.stringify(cart))
+            
+
+            }
+        }
+    </script>
+</body>
+</html>
